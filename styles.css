@@ -121,6 +121,15 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#14b8a6);
   border-radius:999px;transition:width .4s ease;}
 
+/* ---- 每天时间档位 ---- */
+.pace{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 12px;}
+.pace-l{font-size:12px;color:var(--muted);margin-right:2px;}
+.pace-btn{border:none;background:var(--card);color:var(--muted);border-radius:999px;padding:6px 14px;
+  font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.pace-btn.on{background:var(--teal);color:#fff;}
+.pace-btn:active{opacity:.8;}
+.pace-t{font-size:11px;color:var(--muted);margin-left:auto;}
+
 /* ---- 明日预告 ---- */
 .tomorrow{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;border-radius:16px;
   padding:16px;margin:16px 0 20px;cursor:pointer;}

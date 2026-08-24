@@ -8,6 +8,31 @@ const state = { lessons: [], refs: [], progress: load() };
 let _wordIndex = null;   // 全量词索引(LightPeek 用)
 let currentLesson = null; // 当前打开的课程(全部朗读用)
 
+/* ---- 每天时间档位(与 export.py PACES 对齐)---- */
+const PACES = [
+  { min: 5,  label: '5分' },
+  { min: 10, label: '10分' },
+  { min: 15, label: '15分' },
+  { min: 20, label: '20分' },
+];
+function currentPace(){
+  const p = parseInt(state.progress.pace, 10);
+  return PACES.some(x => x.min === p) ? p : 10;
+}
+function setPace(min){
+  state.progress.pace = min;
+  save();
+  const list = state.lessonsByPace && state.lessonsByPace[String(min)];
+  if(list) state.lessons = list;
+  _wordIndex = null;   // 词表变了,LightPeek 索引重建
+}
+function paceBarHTML(){
+  const cur = currentPace();
+  return `<div class="pace"><span class="pace-l">⏱ 每天</span>` +
+    PACES.map(p => `<button class="pace-btn${p.min === cur ? ' on' : ''}" data-pace="${p.min}">${p.label}</button>`).join('') +
+    `<span class="pace-t">共 ${state.lessons.length} 课</span></div>`;
+}
+
 function load(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state.progress)); }
 
@@ -222,7 +247,7 @@ function renderToday(){
   if(today){ renderLesson(today.date); return; }
   const last = state.lessons.filter(l => daily(l) && l.date < todayStr()).sort((a,b) => b.date.localeCompare(a.date))[0];
   const upcoming = state.lessons.filter(l => daily(l) && l.date > todayStr()).sort((a,b) => a.date.localeCompare(b.date));
-  $('#view').innerHTML = statsHTML() + `
+  $('#view').innerHTML = paceBarHTML() + statsHTML() + `
     <div class="empty">
       <div class="empty-emoji">🌅</div>
       <p>今天还没有课</p>
@@ -314,7 +339,7 @@ function renderLesson(date){
   currentLesson = l;
   const fromList = todayStr() !== date;
   const isToday = todayStr() === date;
-  $('#view').innerHTML = (isToday ? statsHTML() : '') + `
+  $('#view').innerHTML = (isToday ? paceBarHTML() + statsHTML() : '') + `
     ${fromList ? `<button class="back" data-tab="lessons">‹ 课程</button>` : ''}
     <div class="lesson-head">
       <h2>🇪🇸 ${esc(l.tema)}</h2>
@@ -393,6 +418,16 @@ function switchTab(tab){
 
 function bindGlobal(){
   $$('.tabbar button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  // 每天时间档位:切换 → 换成对应整套排课(lessons_by_pace)并回到今日页
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-pace]');
+    if(!b) return;
+    const min = parseInt(b.dataset.pace, 10);
+    if(min === currentPace()) return;
+    setPace(min);
+    switchTab('today');
+    window.scrollTo(0, 0);
+  });
   document.addEventListener('click', e => {
     const open = e.target.closest('[data-open]');
     if(open){ renderLesson(open.dataset.open); window.scrollTo(0, 0); }
@@ -446,7 +481,10 @@ function bindGlobal(){
     const res = await fetch('lessons.json?t=' + Date.now());
     const data = await res.json();
     state.lessons = data.lessons || [];
+    state.lessonsByPace = data.lessons_by_pace || {};
     state.refs = data.refs || [];
+    const pl = state.lessonsByPace[String(currentPace())];
+    if(pl) state.lessons = pl;   // 按上次选的每天时间档位载入对应排课
   }catch(e){
     $('#view').innerHTML = '<div class="empty"><div class="empty-emoji">😵</div><p>课程数据加载失败</p><p class="muted">先跑 export.py 生成 lessons.json</p></div>';
   }
