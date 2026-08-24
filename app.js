@@ -201,6 +201,19 @@ function tomorrowCardHTML(){
       <button class="t-cta">打开课程 →</button>
     </div>`;
 }
+/* 生词卡翻转:原地翻面,翻后高度自适应内容(例句不裁切) */
+function flipRow(row){
+  row.classList.toggle('flipped');
+  const back = row.querySelector('.vface.back');
+  if(row.classList.contains('flipped')){
+    back.style.position = 'static';
+    const h = Math.max(60, back.offsetHeight + 2);
+    back.style.position = '';
+    row.style.height = h + 'px';
+  } else {
+    row.style.height = '';
+  }
+}
 
 /* ---- 视图 ---- */
 function renderToday(){
@@ -397,10 +410,10 @@ function bindGlobal(){
     const s = e.target.closest('[data-es]');
     if(s){ e.stopPropagation(); speak(s.dataset.es); }
   });
-  // 生词卡翻转:点右侧 / 背面翻面(原地看例句)
+  // 生词卡翻转:点右侧 / 背面翻面(原地看例句,高度自适应)
   document.addEventListener('click', e => {
     const f = e.target.closest('[data-flip]');
-    if(f){ const card = f.closest('.vrow'); if(card) card.classList.toggle('flipped'); }
+    if(f){ const card = f.closest('.vrow'); if(card) flipRow(card); }
   });
   // LightPeek:点单词弹词卡(开口句词)
   document.addEventListener('click', e => {
