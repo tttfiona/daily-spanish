@@ -5,6 +5,8 @@ const INTERVALS = [1, 3, 7, 15, 30];
 const LS_KEY = 'daily-esp-progress-v1';
 
 const state = { lessons: [], refs: [], progress: load() };
+let _wordIndex = null;   // 全量词索引(LightPeek 用)
+let currentLesson = null; // 当前打开的课程(全部朗读用)
 
 function load(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state.progress)); }
@@ -17,12 +19,32 @@ function parseDate(s){ return new Date(s + 'T00:00:00'); }
 function fmt(s){ const d = parseDate(s); const w = '日一二三四五六'[d.getDay()]; return `${d.getMonth()+1}月${d.getDate()}日 · 周${w}`; }
 
 /* ---- TTS 朗读 ---- */
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(x => (x.lang||'').toLowerCase().startsWith('es')) || null;
+}
 function speak(text){
   if(!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'es-ES'; u.rate = 0.9;
+  u.lang = 'es-ES';
+  const v = pickVoice(); if(v) u.voice = v;
+  u.rate = 0.85;
   speechSynthesis.speak(u);
+}
+function speakAll(texts){
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  for(const t of texts){
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = 'es-ES'; u.rate = 0.85;
+    const v = pickVoice(); if(v) u.voice = v;
+    speechSynthesis.speak(u);
+  }
+}
+if('speechSynthesis' in window){
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
 
 /* ---- 进度 ---- */
@@ -42,6 +64,16 @@ function checkin(date){
   state.progress.lessons[date] = state.progress.lessons[date] || {};
   state.progress.lessons[date].done = !state.progress.lessons[date].done;
   save(); renderLesson(date); renderStreak();
+}
+function overallProgress(){
+  const daily = state.lessons.filter(l => !l.ref);
+  const done = daily.filter(l => isDone(l.date)).length;
+  const total = daily.length;
+  return { done, total, pct: total ? Math.round(done / total * 100) : 0 };
+}
+function nextUpcoming(){
+  const t = todayStr();
+  return state.lessons.filter(l => !l.ref && l.date > t).sort((a,b) => a.date.localeCompare(b.date))[0] || null;
 }
 
 /* ---- 间隔复习 ---- */
@@ -75,6 +107,99 @@ function renderStreak(){ const el = $('#streak'); if(el) el.textContent = '🔥 
 /* ---- 转义 ---- */
 function esc(s){ return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+/* ---- LightPeek:单词可点 ---- */
+function wordify(es){
+  return esc(es).replace(/([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/g, '<span class="wrd" data-w="$1">$1</span>');
+}
+function buildWordIndex(){
+  const idx = {};
+  for(const l of state.lessons){
+    for(const v of l.vocab){
+      const toks = (v.w || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-zñ]+/g) || [];
+      for(const t of toks){ if(t && !(t in idx)) idx[t] = v; }
+    }
+  }
+  return idx;
+}
+function wordIndex(){ if(!_wordIndex) _wordIndex = buildWordIndex(); return _wordIndex; }
+function findWord(w){ return wordIndex()[ (w || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zñ]/g,'') ] || null; }
+
+function openWordPopup(word){
+  const v = findWord(word);
+  if(!v) return;
+  $('#pw-w').textContent = v.w;
+  $('#pw-m').textContent = v.m;
+  const ph = $('#pw-ph');
+  if(v.ph){ ph.textContent = '🔤 谐音: ' + v.ph; ph.style.display = 'inline-block'; }
+  else ph.style.display = 'none';
+  $('#pw-e').innerHTML = (v.e ? `<div class="pw-e-line">${esc(v.e)}</div>` : '') + (v.n ? `<div class="pw-n">${esc(v.n)}</div>` : '');
+  $('#wordpopup').hidden = false;
+}
+
+/* ---- 跟读打分(Web Speech API)---- */
+function normToks(s){ return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-zñ]+/g) || []; }
+function score(target, said){
+  const t = normToks(target), s = normToks(said);
+  if(!t.length) return 0;
+  let hit = 0;
+  for(const tw of t){ if(s.includes(tw)) hit++; }
+  return Math.round(hit / t.length * 100);
+}
+function startFollow(es, btn){
+  const row = btn.parentElement;
+  const status = row.querySelector('.follow-status');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ if(status) status.textContent = '⚠️ 此浏览器不支持跟读(建议 Chrome / 安卓)'; return; }
+  const rec = new SR();
+  rec.lang = 'es-ES';
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
+  let said = '';
+  btn.textContent = '⏹ 收听中…';
+  if(status) status.textContent = '🎙 请读出这句话';
+  rec.onresult = e => {
+    said = '';
+    for(let i = 0; i < e.results.length; i++) said += e.results[i][0].transcript + ' ';
+    if(status) status.textContent = '🧠 听到: ' + esc(said.trim()).slice(0, 60);
+  };
+  rec.onend = () => {
+    btn.textContent = '🎙 跟读打分';
+    if(said.trim()) showScore(es, said, status);
+    else if(status) status.textContent = '😅 没听清,再试一次';
+  };
+  rec.onerror = () => {
+    btn.textContent = '🎙 跟读打分';
+    if(status) status.textContent = '⚠️ 麦克风不可用或已拒绝';
+  };
+  try { rec.start(); } catch(e){ if(status) status.textContent = '⚠️ 无法启动录音'; }
+}
+function showScore(es, said, status){
+  const s = score(es, said);
+  const msg = s >= 80 ? '👏 很棒' : s >= 50 ? '👍 不错,再顺一遍' : '💪 再听一遍原声吧';
+  if(status) status.innerHTML = `你读: <i>${esc(said.trim())}</i><br><b class="score s${Math.min(5, Math.floor(s/20))}">${s} 分</b> ${msg}`;
+}
+
+/* ---- 今日页统计条 + 明日预告 ---- */
+function todayStripHTML(){
+  const p = overallProgress();
+  const next = nextUpcoming();
+  return `
+    <div class="stats">
+      <div class="stat"><div class="stat-n">🔥 ${streak()}</div><div class="stat-l">连续天数</div></div>
+      <div class="stat"><div class="stat-n">${p.pct}%</div><div class="stat-l">课程进度</div></div>
+      <div class="stat"><div class="stat-n">${p.done}/${p.total}</div><div class="stat-l">已打卡</div></div>
+    </div>
+    <div class="progress"><i style="width:${p.pct}%"></i></div>
+    ${next ? `
+      <div class="tomorrow" data-open="${next.date}">
+        <div class="t-l">${next.date === addDays(todayStr(), 1) ? '📅 明天学什么' : '⏭ 下一课'}</div>
+        <div class="t-t">${esc(next.tema)}</div>
+        <div class="t-words">${next.vocab.slice(0, 5).map(v => `<span>${esc(v.w)}</span>`).join('')}</div>
+        <button class="t-cta">打开课程 →</button>
+      </div>` : ''}
+  `;
+}
+
 /* ---- 视图 ---- */
 function renderToday(){
   const daily = l => !l.ref;
@@ -82,7 +207,7 @@ function renderToday(){
   if(today){ renderLesson(today.date); return; }
   const last = state.lessons.filter(l => daily(l) && l.date < todayStr()).sort((a,b) => b.date.localeCompare(a.date))[0];
   const upcoming = state.lessons.filter(l => daily(l) && l.date > todayStr()).sort((a,b) => a.date.localeCompare(b.date));
-  $('#view').innerHTML = `
+  $('#view').innerHTML = todayStripHTML() + `
     <div class="empty">
       <div class="empty-emoji">🌅</div>
       <p>今天还没有课</p>
@@ -98,6 +223,7 @@ function renderToday(){
 function renderLessons(){
   const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => b.date.localeCompare(a.date));
   const refs = state.refs || [];
+  const p = overallProgress();
   const row = l => `
     <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
       <div>
@@ -107,6 +233,10 @@ function renderLessons(){
       <span class="chev">›</span>
     </div>`;
   $('#view').innerHTML = `
+    <div class="section">
+      <div class="h2">📊 课程进度 · ${p.done}/${p.total}</div>
+      <div class="progress"><i style="width:${p.pct}%"></i></div>
+    </div>
     ${refs.length ? `<div class="section"><div class="h2">📚 专题学习</div>
       ${refs.map(r => `
         <div class="row" data-openref="${r.id}">
@@ -116,6 +246,21 @@ function renderLessons(){
     ${dailyL.length ? `<div class="section"><div class="h2">📅 每日课程</div>${dailyL.map(row).join('')}</div>` : ''}
     ${(!dailyL.length && !refs.length) ? '<p class="muted">还没有课程。</p>' : ''}
   `;
+}
+
+function senHTML(s){
+  return `
+    <div class="sentence">
+      <button class="speak" data-es="${esc(s.es)}">🔊</button>
+      <div class="sen-body">
+        <div class="es">${wordify(s.es)}</div>
+        <div class="zh">${esc(s.zh)}</div>
+        <div class="follow-row">
+          <button class="follow" data-follow="${esc(s.es)}">🎙 跟读打分</button>
+          <span class="follow-status"></span>
+        </div>
+      </div>
+    </div>`;
 }
 
 function renderReview(){
@@ -151,8 +296,10 @@ function renderReview(){
 function renderLesson(date){
   const l = state.lessons.find(x => x.date === date);
   if(!l) return;
+  currentLesson = l;
   const fromList = todayStr() !== date;
-  $('#view').innerHTML = `
+  const strip = (date === todayStr()) ? todayStripHTML() : '';
+  $('#view').innerHTML = strip + `
     ${fromList ? `<button class="back" data-tab="lessons">‹ 课程</button>` : ''}
     <div class="lesson-head">
       <h2>🇪🇸 ${esc(l.tema)}</h2>
@@ -161,7 +308,7 @@ function renderLesson(date){
     </div>
 
     <section class="section">
-      <div class="h2">🆕 生词 · ${l.vocab.length}</div>
+      <div class="h2">🆕 生词 · ${l.vocab.length} ${l.vocab.length ? '<button class="mini" data-readall="vocab">🔊 全部朗读</button>' : ''}</div>
       ${l.tip ? `<blockquote class="tip">💡 ${esc(l.tip)}</blockquote>` : ''}
       ${l.vocab.map(v => `
         <div class="card"><div class="card-inner">
@@ -172,12 +319,8 @@ function renderLesson(date){
 
     ${l.grammar ? `<section class="section"><div class="h2">🧩 语法一点通</div><div class="grammar">${l.grammar}</div></section>` : ''}
 
-    ${l.speaking.length ? `<section class="section"><div class="h2">🗣 开口 ${l.speaking.length} 句</div>
-      ${l.speaking.map(s => `
-        <div class="sentence">
-          <button class="speak" data-es="${esc(s.es)}">🔊</button>
-          <div><div class="es">${esc(s.es)}</div><div class="zh">${esc(s.zh)}</div></div>
-        </div>`).join('')}
+    ${l.speaking.length ? `<section class="section"><div class="h2">🗣 开口 ${l.speaking.length} 句 ${l.speaking.length ? '<button class="mini" data-readall="speak">🔊 全部朗读</button>' : ''}</div>
+      ${l.speaking.map(senHTML).join('')}
     </section>` : ''}
 
     ${l.review.length ? `<section class="section"><div class="h2">🔁 复习</div>
@@ -232,6 +375,29 @@ function bindGlobal(){
     const back = e.target.closest('.back[data-tab]');
     if(back) switchTab(back.dataset.tab);
   });
+  // LightPeek:点单词弹词卡
+  document.addEventListener('click', e => {
+    const w = e.target.closest('.wrd[data-w]');
+    if(w){ e.stopPropagation(); openWordPopup(w.dataset.w); }
+  });
+  // 跟读打分
+  document.addEventListener('click', e => {
+    const f = e.target.closest('[data-follow]');
+    if(f){ e.stopPropagation(); startFollow(f.dataset.follow, f); }
+  });
+  // 全部朗读
+  document.addEventListener('click', e => {
+    const r = e.target.closest('[data-readall]');
+    if(!r || !currentLesson) return;
+    const texts = r.dataset.readall === 'speak'
+      ? currentLesson.speaking.map(s => s.es)
+      : currentLesson.vocab.map(v => v.w);
+    speakAll(texts);
+  });
+  // 词卡弹层
+  document.addEventListener('click', e => {
+    if(e.target.closest('[data-close]')) $('#wordpopup').hidden = true;
+  });
 }
 
 /* ---- 启动 ---- */
@@ -244,6 +410,23 @@ function bindGlobal(){
   }catch(e){
     $('#view').innerHTML = '<div class="empty"><div class="empty-emoji">😵</div><p>课程数据加载失败</p><p class="muted">先跑 export.py 生成 lessons.json</p></div>';
   }
+  // 词卡弹层
+  const popup = document.createElement('div');
+  popup.id = 'wordpopup';
+  popup.className = 'popup';
+  popup.hidden = true;
+  popup.innerHTML = `
+    <div class="popup-mask" data-close></div>
+    <div class="popup-sheet">
+      <button class="popup-close" data-close>✕</button>
+      <div class="pw-head"><button class="spk" id="pw-spk">🔊</button><span class="pw-w" id="pw-w"></span></div>
+      <div class="pw-m" id="pw-m"></div>
+      <div id="pw-ph" class="pw-ph" style="display:none"></div>
+      <div class="pw-e" id="pw-e"></div>
+    </div>`;
+  document.body.appendChild(popup);
+  $('#pw-spk').addEventListener('click', () => { const w = $('#pw-w').textContent; if(w) speak(w); });
+
   bindGlobal();
   switchTab('today');
 })();
