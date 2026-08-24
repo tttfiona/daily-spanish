@@ -323,13 +323,12 @@ function renderLesson(date){
               </div>
               <div class="v-right" data-flip>
                 <span class="v-m">${esc(v.m)}</span>
-                ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
                 <span class="v-chev">›</span>
               </div>
             </div>
             <div class="vface back" data-flip>
-              ${v.e ? `<div class="v-bk"><span class="v-bk-l">💬</span><span>${esc(v.e)}</span></div>`
-                : v.ph ? `<div class="v-bk"><span class="v-bk-l">🔤</span><span>${esc(v.ph)}</span></div>` : ''}
+              ${v.e ? `<div class="v-bk"><span class="v-bk-l">💬</span><span>${esc(v.e)}</span></div>` : ''}
+              ${v.ph ? `<div class="v-bk"><span class="v-bk-l">🔤</span><span>${esc(v.ph)}</span></div>` : ''}
               ${v.n ? `<div class="v-bk"><span class="v-bk-l">📌</span><span>${esc(v.n)}</span></div>` : ''}
               <div class="v-back-hint">‹ 点卡片翻回</div>
             </div>
