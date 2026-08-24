@@ -165,3 +165,12 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .pw-e{font-size:14px;}
 .pw-e-line{font-style:italic;color:var(--ink);margin-top:4px;}
 .pw-n{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* ---- 生词紧凑列表(vrow)---- */
+.vrow{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:10px 12px;
+  margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.05);cursor:pointer;}
+.vrow:active{background:var(--teal-l);}
+.v-info{flex:1;min-width:0;}
+.v-w{font-size:16px;font-weight:700;color:var(--teal);}
+.v-m{font-size:13px;color:var(--ink);margin-top:1px;}
+.v-ph{font-size:12px;color:var(--muted);flex:none;margin-left:8px;}

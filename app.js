@@ -179,25 +179,27 @@ function showScore(es, said, status){
   if(status) status.innerHTML = `你读: <i>${esc(said.trim())}</i><br><b class="score s${Math.min(5, Math.floor(s/20))}">${s} 分</b> ${msg}`;
 }
 
-/* ---- 今日页统计条 + 明日预告 ---- */
-function todayStripHTML(){
+/* ---- 今日页顶部统计条 + 明日预告 ---- */
+function statsHTML(){
   const p = overallProgress();
-  const next = nextUpcoming();
   return `
     <div class="stats">
       <div class="stat"><div class="stat-n">🔥 ${streak()}</div><div class="stat-l">连续天数</div></div>
       <div class="stat"><div class="stat-n">${p.pct}%</div><div class="stat-l">课程进度</div></div>
       <div class="stat"><div class="stat-n">${p.done}/${p.total}</div><div class="stat-l">已打卡</div></div>
     </div>
-    <div class="progress"><i style="width:${p.pct}%"></i></div>
-    ${next ? `
-      <div class="tomorrow" data-open="${next.date}">
-        <div class="t-l">${next.date === addDays(todayStr(), 1) ? '📅 明天学什么' : '⏭ 下一课'}</div>
-        <div class="t-t">${esc(next.tema)}</div>
-        <div class="t-words">${next.vocab.slice(0, 5).map(v => `<span>${esc(v.w)}</span>`).join('')}</div>
-        <button class="t-cta">打开课程 →</button>
-      </div>` : ''}
-  `;
+    <div class="progress"><i style="width:${p.pct}%"></i></div>`;
+}
+function tomorrowCardHTML(){
+  const next = nextUpcoming();
+  if(!next) return '';
+  return `
+    <div class="tomorrow" data-open="${next.date}">
+      <div class="t-l">${next.date === addDays(todayStr(), 1) ? '📅 明天学什么' : '⏭ 下一课'}</div>
+      <div class="t-t">${esc(next.tema)}</div>
+      <div class="t-words">${next.vocab.slice(0, 5).map(v => `<span>${esc(v.w)}</span>`).join('')}</div>
+      <button class="t-cta">打开课程 →</button>
+    </div>`;
 }
 
 /* ---- 视图 ---- */
@@ -207,7 +209,7 @@ function renderToday(){
   if(today){ renderLesson(today.date); return; }
   const last = state.lessons.filter(l => daily(l) && l.date < todayStr()).sort((a,b) => b.date.localeCompare(a.date))[0];
   const upcoming = state.lessons.filter(l => daily(l) && l.date > todayStr()).sort((a,b) => a.date.localeCompare(b.date));
-  $('#view').innerHTML = todayStripHTML() + `
+  $('#view').innerHTML = statsHTML() + `
     <div class="empty">
       <div class="empty-emoji">🌅</div>
       <p>今天还没有课</p>
@@ -298,8 +300,8 @@ function renderLesson(date){
   if(!l) return;
   currentLesson = l;
   const fromList = todayStr() !== date;
-  const strip = (date === todayStr()) ? todayStripHTML() : '';
-  $('#view').innerHTML = strip + `
+  const isToday = todayStr() === date;
+  $('#view').innerHTML = (isToday ? statsHTML() : '') + `
     ${fromList ? `<button class="back" data-tab="lessons">‹ 课程</button>` : ''}
     <div class="lesson-head">
       <h2>🇪🇸 ${esc(l.tema)}</h2>
@@ -311,10 +313,14 @@ function renderLesson(date){
       <div class="h2">🆕 生词 · ${l.vocab.length} ${l.vocab.length ? '<button class="mini" data-readall="vocab">🔊 全部朗读</button>' : ''}</div>
       ${l.tip ? `<blockquote class="tip">💡 ${esc(l.tip)}</blockquote>` : ''}
       ${l.vocab.map(v => `
-        <div class="card"><div class="card-inner">
-          <div class="card-face front"><button class="spk" data-es="${esc(v.w)}">🔊</button><span class="w">${esc(v.w)}</span><span class="hint">点卡片看释义</span></div>
-          <div class="card-face back"><span class="m">${esc(v.m)}</span>${v.ph ? `<span class="ph">🔤 ${esc(v.ph)}</span>` : ''}${v.e ? `<span class="e">${esc(v.e)}</span>` : ''}${v.n ? `<span class="n">${esc(v.n)}</span>` : ''}</div>
-        </div></div>`).join('')}
+        <div class="vrow" data-w="${esc(v.w)}">
+          <button class="spk" data-es="${esc(v.w)}">🔊</button>
+          <div class="v-info">
+            <div class="v-w">${esc(v.w)}</div>
+            <div class="v-m">${esc(v.m)}</div>
+          </div>
+          ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
+        </div>`).join('')}
     </section>
 
     ${l.grammar ? `<section class="section"><div class="h2">🧩 语法一点通</div><div class="grammar">${l.grammar}</div></section>` : ''}
@@ -331,8 +337,7 @@ function renderLesson(date){
     ${l.ref
       ? '<div class="done-badge">📌 专题课 · 不参与打卡</div>'
       : `<button class="cta" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>`}
-  `;
-  $$('.card').forEach(c => c.addEventListener('click', () => c.classList.toggle('flipped')));
+  ` + (isToday ? tomorrowCardHTML() : '');
   $$('.spk').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); speak(b.dataset.es); }));
   $$('.speak').forEach(b => b.addEventListener('click', () => speak(b.dataset.es)));
   $$('input[type=checkbox][data-date]').forEach(c => c.addEventListener('change', () => toggleReview(c.dataset.date, c.dataset.word)));
@@ -377,7 +382,7 @@ function bindGlobal(){
   });
   // LightPeek:点单词弹词卡
   document.addEventListener('click', e => {
-    const w = e.target.closest('.wrd[data-w]');
+    const w = e.target.closest('[data-w]');
     if(w){ e.stopPropagation(); openWordPopup(w.dataset.w); }
   });
   // 跟读打分
