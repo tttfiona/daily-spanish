@@ -48,6 +48,10 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .card .e{font-size:14px;color:var(--ink);font-style:italic;margin-top:2px;}
 .card .n{font-size:13px;color:var(--muted);margin-top:4px;}
 .card .hint{font-size:12px;color:var(--muted);margin-top:10px;}
+.spk{flex:none;width:34px;height:34px;border-radius:50%;border:none;background:var(--teal-l);color:var(--teal);font-size:15px;cursor:pointer;line-height:1;}
+.card-face.front .spk{position:absolute;top:10px;right:10px;}
+.spk:active{opacity:.7;}
+.ph{font-size:13px;color:var(--teal-d);background:#ccfbf1;border-radius:8px;padding:2px 10px;margin-bottom:6px;}
 
 .grammar{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow-x:auto;}
 .grammar h3,.grammar h4{margin:.4em 0 .3em;font-size:15px;}

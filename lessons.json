@@ -14,31 +14,36 @@
           "w": "la lista (de la compra)",
           "m": "购物清单",
           "e": "He hecho la lista de la compra.",
-          "n": "我列好了购物清单。"
+          "n": "我列好了购物清单。",
+          "ph": "拉 利斯塔"
         },
         {
           "w": "comprar",
           "m": "买",
           "e": "Voy a comprar pan.",
-          "n": "我去买面包。"
+          "n": "我去买面包。",
+          "ph": "孔普拉尔"
         },
         {
           "w": "la caja",
           "m": "收银台 / 盒子",
           "e": "¿Dónde está la caja?",
-          "n": "收银台在哪里?"
+          "n": "收银台在哪里?",
+          "ph": "拉 卡哈"
         },
         {
           "w": "el precio",
           "m": "价格",
           "e": "¿Cuál es el precio?",
-          "n": "多少钱?"
+          "n": "多少钱?",
+          "ph": "艾尔 普雷西奥"
         },
         {
           "w": "pagar",
           "m": "付钱",
           "e": "Voy a pagar con tarjeta.",
-          "n": "我用卡付钱。"
+          "n": "我用卡付钱。",
+          "ph": "帕加尔"
         }
       ],
       "tip": "西班牙超市高频词——la bolsa(袋子,要花钱)、el carrito(购物车)、la fruta(水果)、la leche(牛奶)。",
@@ -85,31 +90,36 @@
           "w": "el banco",
           "m": "银行",
           "e": "¿Dónde está el banco?",
-          "n": "银行在哪里?"
+          "n": "银行在哪里?",
+          "ph": "艾尔 班科"
         },
         {
           "w": "la cuenta",
           "m": "(银行)账户",
           "e": "Quiero abrir una cuenta.",
-          "n": "我想开个账户。"
+          "n": "我想开个账户。",
+          "ph": "拉 昆塔"
         },
         {
           "w": "abrir",
           "m": "开(账户/门)",
           "e": "Necesito abrir una cuenta.",
-          "n": "我需要开个账户。"
+          "n": "我需要开个账户。",
+          "ph": "阿布里尔"
         },
         {
           "w": "el dinero",
           "m": "钱",
           "e": "Necesito sacar dinero.",
-          "n": "我需要取钱。"
+          "n": "我需要取钱。",
+          "ph": "艾尔 迪内罗"
         },
         {
           "w": "la cita",
           "m": "预约",
           "e": "Tengo una cita a las diez.",
-          "n": "我十点有个预约。"
+          "n": "我十点有个预约。",
+          "ph": "拉 西塔"
         }
       ],
       "tip": "在西班牙办居留 / 开银行卡几乎都要先约 cita(网上或 app 上预约),所以 cita 是生活高频词。",
@@ -160,61 +170,71 @@
           "w": "el piso",
           "m": "公寓",
           "e": "¿Sigue disponible el piso?",
-          "n": "公寓还空着吗?"
+          "n": "公寓还空着吗?",
+          "ph": "艾尔 比索"
         },
         {
           "w": "la habitación",
           "m": "房间",
           "e": "Estoy muy interesada en la habitación.",
-          "n": "我对这个房间很感兴趣。"
+          "n": "我对这个房间很感兴趣。",
+          "ph": "拉 阿比塔西翁"
         },
         {
           "w": "el alquiler",
           "m": "租金",
           "e": "¿Cuánto es el alquiler al mes?",
-          "n": "月租多少钱?"
+          "n": "月租多少钱?",
+          "ph": "艾尔 阿尔基莱尔"
         },
         {
           "w": "la fianza",
           "m": "押金",
           "e": "¿Cuántos meses de fianza se piden?",
-          "n": "要交几个月押金?"
+          "n": "要交几个月押金?",
+          "ph": "拉 菲安萨"
         },
         {
           "w": "los gastos",
           "m": "杂费(水电燃气)",
           "e": "¿Qué gastos están incluidos?",
-          "n": "包含哪些杂费?"
+          "n": "包含哪些杂费?",
+          "ph": "洛斯 嘎斯托斯"
         },
         {
           "w": "la calefacción",
           "m": "暖气",
           "e": "¿La calefacción está incluida en el precio?",
-          "n": "暖气费含在价格里吗?"
+          "n": "暖气费含在价格里吗?",
+          "ph": "拉 卡莱法克西翁"
         },
         {
           "w": "el contrato",
           "m": "合同",
           "e": "Cuando llegue, gestionamos el contrato.",
-          "n": "等我到了,再办合同。"
+          "n": "等我到了,再办合同。",
+          "ph": "艾尔 孔特拉托"
         },
         {
           "w": "el empadronamiento",
           "m": "住家证明",
           "e": "¿Aquí puedo tramitar el empadronamiento?",
-          "n": "这里能办住家证明吗?"
+          "n": "这里能办住家证明吗?",
+          "ph": "艾尔 恩帕德罗纳米恩托"
         },
         {
           "w": "visitar",
           "m": "看(房)",
           "e": "¿Puedo visitar la habitación esta tarde?",
-          "n": "我今天下午能看房吗?"
+          "n": "我今天下午能看房吗?",
+          "ph": "比西塔尔"
         },
         {
           "w": "dar el sol",
           "m": "晒到太阳(有阳光)",
           "e": "¿Le da el sol por la mañana o por la tarde?",
-          "n": "上午还是下午有阳光?"
+          "n": "上午还是下午有阳光?",
+          "ph": "达尔 艾尔 索尔"
         }
       ],
       "tip": "西班牙人日常说 piso(公寓),单间叫 habitación;押金常见 1–2 个月;问价必问 gastos(杂费)和 calefacción(暖气)——冬天靠它活。",

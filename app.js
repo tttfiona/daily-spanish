@@ -121,8 +121,8 @@ function renderReview(){
     <div class="section"><div class="h2">🔁 今天到期 · ${due.length}</div>
     ${due.length ? due.map(({l, v}) => `
       <div class="card small"><div class="card-inner">
-        <div class="card-face front"><span class="w">${esc(v.w)}</span><span class="hint">点一下看释义</span></div>
-        <div class="card-face back"><span class="m">${esc(v.m)}</span>${v.e ? `<span class="e">${esc(v.e)}</span>` : ''}</div>
+        <div class="card-face front"><button class="spk" data-es="${esc(v.w)}">🔊</button><span class="w">${esc(v.w)}</span><span class="hint">点一下看释义</span></div>
+        <div class="card-face back"><span class="m">${esc(v.m)}</span>${v.ph ? `<span class="ph">🔤 ${esc(v.ph)}</span>` : ''}${v.e ? `<span class="e">${esc(v.e)}</span>` : ''}</div>
       </div></div>
       <div class="review-actions">
         <button class="btn small" data-review="${esc(wordKey(l, v))}">记住了 ✅</button>
@@ -130,6 +130,7 @@ function renderReview(){
     : `<div class="empty"><div class="empty-emoji">🎉</div><p>今天没有到期的复习</p></div>`}
     </div>`;
   $$('.card').forEach(c => c.addEventListener('click', () => c.classList.toggle('flipped')));
+  $$('.spk').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); speak(b.dataset.es); }));
   $$('[data-review]').forEach(b => b.addEventListener('click', () => {
     const [date, w] = b.dataset.review.split('|');
     const l = state.lessons.find(x => x.date === date);
@@ -155,8 +156,8 @@ function renderLesson(date){
       ${l.tip ? `<blockquote class="tip">💡 ${esc(l.tip)}</blockquote>` : ''}
       ${l.vocab.map(v => `
         <div class="card"><div class="card-inner">
-          <div class="card-face front"><span class="w">${esc(v.w)}</span><span class="hint">点一下看释义</span></div>
-          <div class="card-face back"><span class="m">${esc(v.m)}</span>${v.e ? `<span class="e">${esc(v.e)}</span>` : ''}${v.n ? `<span class="n">${esc(v.n)}</span>` : ''}</div>
+          <div class="card-face front"><button class="spk" data-es="${esc(v.w)}">🔊</button><span class="w">${esc(v.w)}</span><span class="hint">点卡片看释义</span></div>
+          <div class="card-face back"><span class="m">${esc(v.m)}</span>${v.ph ? `<span class="ph">🔤 ${esc(v.ph)}</span>` : ''}${v.e ? `<span class="e">${esc(v.e)}</span>` : ''}${v.n ? `<span class="n">${esc(v.n)}</span>` : ''}</div>
         </div></div>`).join('')}
     </section>
 
@@ -180,6 +181,7 @@ function renderLesson(date){
       : `<button class="cta" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>`}
   `;
   $$('.card').forEach(c => c.addEventListener('click', () => c.classList.toggle('flipped')));
+  $$('.spk').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); speak(b.dataset.es); }));
   $$('.speak').forEach(b => b.addEventListener('click', () => speak(b.dataset.es)));
   $$('input[type=checkbox][data-date]').forEach(c => c.addEventListener('change', () => toggleReview(c.dataset.date, c.dataset.word)));
   const cta = $('[data-checkin]');
