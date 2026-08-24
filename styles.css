@@ -96,6 +96,7 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .cta{display:block;width:100%;padding:14px;border:none;border-radius:14px;background:var(--teal);color:#fff;
   font-size:16px;font-weight:600;cursor:pointer;margin-top:6px;}
 .cta:active{opacity:.85;}
+.cta.done{background:var(--teal-l);color:var(--teal);}
 .btn{display:block;text-align:center;padding:12px;border-radius:12px;background:var(--card);color:var(--teal);
   border:1px solid var(--teal);font-size:14px;cursor:pointer;text-decoration:none;margin:4px 0 14px;}
 .btn.small{padding:9px;font-size:13px;}
@@ -122,7 +123,7 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 
 /* ---- 明日预告 ---- */
 .tomorrow{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;border-radius:16px;
-  padding:16px;margin-bottom:20px;cursor:pointer;}
+  padding:16px;margin:16px 0 20px;cursor:pointer;}
 .tomorrow .t-l{font-size:12px;opacity:.85;margin-bottom:4px;}
 .tomorrow .t-t{font-size:17px;font-weight:700;margin-bottom:8px;}
 .tomorrow .t-words{font-size:13px;opacity:.95;display:flex;flex-wrap:wrap;gap:4px 10px;}
@@ -166,11 +167,17 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .pw-e-line{font-style:italic;color:var(--ink);margin-top:4px;}
 .pw-n{font-size:13px;color:var(--muted);margin-top:4px;}
 
-/* ---- 生词紧凑列表(vrow)---- */
-.vrow{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:12px;padding:10px 12px;
-  margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.05);cursor:pointer;}
-.vrow:active{background:var(--teal-l);}
-.v-info{flex:1;min-width:0;}
+/* ---- 生词紧凑列表(vrow:左点发音 / 右点看例句)---- */
+.v-hint{font-size:12px;color:var(--muted);margin:-2px 0 10px;}
+.vrow{display:flex;align-items:stretch;background:var(--card);border-radius:14px;
+  margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.05);overflow:hidden;}
+.v-left{display:flex;align-items:center;gap:7px;padding:12px 14px;cursor:pointer;flex:none;
+  border-right:1px solid rgba(0,0,0,.05);}
+.v-left:active{background:var(--teal-l);}
+.v-ico{font-size:13px;}
 .v-w{font-size:16px;font-weight:700;color:var(--teal);}
-.v-m{font-size:13px;color:var(--ink);margin-top:1px;}
-.v-ph{font-size:12px;color:var(--muted);flex:none;margin-left:8px;}
+.v-right{flex:1;display:flex;align-items:center;gap:8px;padding:12px 14px;cursor:pointer;min-width:0;}
+.v-right:active{background:var(--teal-l);}
+.v-m{font-size:13px;color:var(--ink);flex:1;min-width:0;}
+.v-ph{font-size:12px;color:var(--muted);flex:none;}
+.v-chev{color:var(--muted);flex:none;font-size:18px;line-height:1;}

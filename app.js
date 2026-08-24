@@ -311,15 +311,19 @@ function renderLesson(date){
 
     <section class="section">
       <div class="h2">🆕 生词 · ${l.vocab.length} ${l.vocab.length ? '<button class="mini" data-readall="vocab">🔊 全部朗读</button>' : ''}</div>
+      ${l.vocab.length ? '<div class="v-hint">👆 左点发音 · 右点看例句</div>' : ''}
       ${l.tip ? `<blockquote class="tip">💡 ${esc(l.tip)}</blockquote>` : ''}
       ${l.vocab.map(v => `
-        <div class="vrow" data-w="${esc(v.w)}">
-          <button class="spk" data-es="${esc(v.w)}">🔊</button>
-          <div class="v-info">
-            <div class="v-w">${esc(v.w)}</div>
-            <div class="v-m">${esc(v.m)}</div>
+        <div class="vrow">
+          <div class="v-left" data-es="${esc(v.w)}">
+            <span class="v-ico">🔊</span>
+            <span class="v-w">${esc(v.w)}</span>
           </div>
-          ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
+          <div class="v-right" data-w="${esc(v.w)}">
+            <span class="v-m">${esc(v.m)}</span>
+            ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
+            <span class="v-chev">›</span>
+          </div>
         </div>`).join('')}
     </section>
 
@@ -336,10 +340,9 @@ function renderLesson(date){
 
     ${l.ref
       ? '<div class="done-badge">📌 专题课 · 不参与打卡</div>'
-      : `<button class="cta" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>`}
+      : `<button class="cta${isDone(date) ? ' done' : ''}" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>`}
   ` + (isToday ? tomorrowCardHTML() : '');
   $$('.spk').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); speak(b.dataset.es); }));
-  $$('.speak').forEach(b => b.addEventListener('click', () => speak(b.dataset.es)));
   $$('input[type=checkbox][data-date]').forEach(c => c.addEventListener('change', () => toggleReview(c.dataset.date, c.dataset.word)));
   const cta = $('[data-checkin]');
   if(cta) cta.addEventListener('click', () => checkin(cta.dataset.checkin));
@@ -380,7 +383,12 @@ function bindGlobal(){
     const back = e.target.closest('.back[data-tab]');
     if(back) switchTab(back.dataset.tab);
   });
-  // LightPeek:点单词弹词卡
+  // 发音:点任何带 data-es 的元素朗读(生词左点 / 开口句🔊 / 复习卡🔊)
+  document.addEventListener('click', e => {
+    const s = e.target.closest('[data-es]');
+    if(s){ e.stopPropagation(); speak(s.dataset.es); }
+  });
+  // LightPeek:点单词弹词卡(生词右侧 / 开口句词)
   document.addEventListener('click', e => {
     const w = e.target.closest('[data-w]');
     if(w){ e.stopPropagation(); openWordPopup(w.dataset.w); }
