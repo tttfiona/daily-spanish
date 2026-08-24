@@ -10,14 +10,13 @@ let currentLesson = null; // 当前打开的课程(全部朗读用)
 
 /* ---- 每天时间档位(与 export.py PACES 对齐)---- */
 const PACES = [
-  { min: 5,  label: '5分' },
   { min: 10, label: '10分' },
-  { min: 15, label: '15分' },
   { min: 20, label: '20分' },
+  { min: 40, label: '40分' },
 ];
 function currentPace(){
   const p = parseInt(state.progress.pace, 10);
-  return PACES.some(x => x.min === p) ? p : 10;
+  return PACES.some(x => x.min === p) ? p : 20;
 }
 function setPace(min){
   state.progress.pace = min;
