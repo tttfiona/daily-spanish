@@ -97,26 +97,24 @@ function renderToday(){
 
 function renderLessons(){
   const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => b.date.localeCompare(a.date));
-  const topicL = state.lessons.filter(l => l.ref).sort((a,b) => b.date.localeCompare(a.date));
   const refs = state.refs || [];
   const row = l => `
     <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
       <div>
         <div class="row-title">${fmt(l.date)} · ${esc(l.tema)}</div>
-        <div class="muted">${l.vocab.length} 词 ${l.ref ? '· 📌 专题' : ''}${isDone(l.date) ? '· ✅ 已打卡' : ''}</div>
+        <div class="muted">${l.vocab.length} 词${isDone(l.date) ? ' · ✅ 已打卡' : ''}</div>
       </div>
       <span class="chev">›</span>
     </div>`;
   $('#view').innerHTML = `
-    ${refs.length ? `<div class="section"><div class="h2">📖 参考</div>
+    ${refs.length ? `<div class="section"><div class="h2">📚 专题学习</div>
       ${refs.map(r => `
         <div class="row" data-openref="${r.id}">
-          <div><div class="row-title">${esc(r.title)}</div><div class="muted">完整笔记 · 点击阅读</div></div>
+          <div><div class="row-title">${esc(r.title)}</div><div class="muted">深度指南 · 点击阅读</div></div>
           <span class="chev">›</span>
         </div>`).join('')}</div>` : ''}
-    ${dailyL.length ? `<div class="section"><div class="h2">📚 每日课程</div>${dailyL.map(row).join('')}</div>` : ''}
-    ${topicL.length ? `<div class="section"><div class="h2">📌 专题</div>${topicL.map(row).join('')}</div>` : ''}
-    ${(!dailyL.length && !topicL.length && !refs.length) ? '<p class="muted">还没有课程。</p>' : ''}
+    ${dailyL.length ? `<div class="section"><div class="h2">📅 每日课程</div>${dailyL.map(row).join('')}</div>` : ''}
+    ${(!dailyL.length && !refs.length) ? '<p class="muted">还没有课程。</p>' : ''}
   `;
 }
 
