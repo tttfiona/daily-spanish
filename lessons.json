@@ -150,6 +150,160 @@
           "m": "付钱"
         }
       ]
+    },
+    {
+      "date": "2026-08-23",
+      "nivel": "A1",
+      "tema": "🏠 租房核心 · 实战词句",
+      "vocab": [
+        {
+          "w": "el piso",
+          "m": "公寓",
+          "e": "¿Sigue disponible el piso?",
+          "n": "公寓还空着吗?"
+        },
+        {
+          "w": "la habitación",
+          "m": "房间",
+          "e": "Estoy muy interesada en la habitación.",
+          "n": "我对这个房间很感兴趣。"
+        },
+        {
+          "w": "el alquiler",
+          "m": "租金",
+          "e": "¿Cuánto es el alquiler al mes?",
+          "n": "月租多少钱?"
+        },
+        {
+          "w": "la fianza",
+          "m": "押金",
+          "e": "¿Cuántos meses de fianza se piden?",
+          "n": "要交几个月押金?"
+        },
+        {
+          "w": "los gastos",
+          "m": "杂费(水电燃气)",
+          "e": "¿Qué gastos están incluidos?",
+          "n": "包含哪些杂费?"
+        },
+        {
+          "w": "la calefacción",
+          "m": "暖气",
+          "e": "¿La calefacción está incluida en el precio?",
+          "n": "暖气费含在价格里吗?"
+        },
+        {
+          "w": "el contrato",
+          "m": "合同",
+          "e": "Cuando llegue, gestionamos el contrato.",
+          "n": "等我到了,再办合同。"
+        },
+        {
+          "w": "el empadronamiento",
+          "m": "住家证明",
+          "e": "¿Aquí puedo tramitar el empadronamiento?",
+          "n": "这里能办住家证明吗?"
+        },
+        {
+          "w": "visitar",
+          "m": "看(房)",
+          "e": "¿Puedo visitar la habitación esta tarde?",
+          "n": "我今天下午能看房吗?"
+        },
+        {
+          "w": "dar el sol",
+          "m": "晒到太阳(有阳光)",
+          "e": "¿Le da el sol por la mañana o por la tarde?",
+          "n": "上午还是下午有阳光?"
+        }
+      ],
+      "tip": "西班牙人日常说 piso(公寓),单间叫 habitación;押金常见 1–2 个月;问价必问 gastos(杂费)和 calefacción(暖气)——冬天靠它活。",
+      "grammar": "<h4>疑问词开头(租房 90% 的句子靠它)</h4>\n<table><thead><tr><th>疑问词</th><th>意思</th><th>例子</th></tr></thead><tbody><tr><td><strong>¿Cuánto…?</strong></td><td>多少</td><td>¿Cuánto es el alquiler? 租金多少?</td></tr><tr><td><strong>¿Cuántos…?</strong></td><td>几个(复数)</td><td>¿Cuántos meses de fianza? 几个月押金?</td></tr><tr><td><strong>¿Cuál…?</strong></td><td>哪个/是什么</td><td>¿Cuál es la dirección? 地址是什么?</td></tr><tr><td><strong>¿Cuándo…?</strong></td><td>什么时候</td><td>¿Cuándo te vendría bien…? 你什么时候方便…?</td></tr><tr><td><strong>¿Dónde…?</strong></td><td>哪里</td><td>¿Dónde está el piso? 公寓在哪?</td></tr><tr><td><strong>¿A qué hora…?</strong></td><td>几点</td><td>¿A qué hora quedamos? 几点见?</td></tr></tbody></table>\n<h4>礼貌句式(比直问更得体,房东回复率更高)</h4>\n<table><thead><tr><th>句式</th><th>意思</th><th>例子</th></tr></thead><tbody><tr><td><strong>¿Podrías + 动词…?</strong></td><td>你能…吗?</td><td>¿Podrías mandarme fotos? 能发我照片吗?</td></tr><tr><td><strong>Me gustaría + 动词…</strong></td><td>我想…</td><td>Me gustaría alquilar por un año. 我想租一年。</td></tr><tr><td><strong>¿Te vendría bien…?</strong></td><td>你…方便吗?</td><td>¿Te vendría bien mañana? 你明天方便吗?</td></tr></tbody></table>\n<blockquote>记住:<strong>se + 动词</strong> = \"被/需要/在…\"(广告和房东最爱用):Se alquila habitación 出租房间;Se piden 2 meses de fianza 需要 2 个月押金。</blockquote>",
+      "speaking": [
+        {
+          "es": "Hola, ¿sigue disponible la habitación?",
+          "zh": "你好,房间还空着吗?"
+        },
+        {
+          "es": "Soy una chica de China y voy a estudiar español.",
+          "zh": "我是中国女生,打算来学西语。"
+        },
+        {
+          "es": "¿Cuánto es el alquiler al mes?",
+          "zh": "月租多少?"
+        },
+        {
+          "es": "¿Qué gastos están incluidos?",
+          "zh": "包含哪些杂费?"
+        },
+        {
+          "es": "¿Cuántos meses de fianza se piden?",
+          "zh": "要交几个月押金?"
+        },
+        {
+          "es": "¿La calefacción está incluida?",
+          "zh": "暖气包含在内吗?"
+        },
+        {
+          "es": "¿Le da el sol por la mañana o por la tarde?",
+          "zh": "上午还是下午有阳光?"
+        },
+        {
+          "es": "¿Cuándo te vendría bien pasar a ver la habitación?",
+          "zh": "你什么时候方便看房?"
+        },
+        {
+          "es": "¿Cuál es la dirección exacta?",
+          "zh": "具体地址是?"
+        },
+        {
+          "es": "Me gustaría alquilar por un año.",
+          "zh": "我想租一年。"
+        }
+      ],
+      "review": [
+        {
+          "w": "la casera",
+          "m": "房东(女)"
+        },
+        {
+          "w": "quedar",
+          "m": "约(见面)"
+        },
+        {
+          "w": "la cocina",
+          "m": "厨房"
+        },
+        {
+          "w": "el baño",
+          "m": "浴室"
+        },
+        {
+          "w": "la cama",
+          "m": "床"
+        },
+        {
+          "w": "la lavadora",
+          "m": "洗衣机"
+        },
+        {
+          "w": "la luz",
+          "m": "电 / 光"
+        },
+        {
+          "w": "el papeleo",
+          "m": "手续(一堆文件)"
+        },
+        {
+          "w": "la compañera de piso",
+          "m": "女室友"
+        },
+        {
+          "w": "exterior / interior",
+          "m": "朝外 / 朝内(天井)"
+        }
+      ],
+      "ref": true
     }
   ]
 }

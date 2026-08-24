@@ -103,7 +103,7 @@ function renderLessons(){
       <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
         <div>
           <div class="row-title">${fmt(l.date)} · ${esc(l.tema)}</div>
-          <div class="muted">${l.vocab.length} 词 ${isDone(l.date) ? '· ✅ 已打卡' : ''}</div>
+          <div class="muted">${l.vocab.length} 词 ${l.ref ? '· 📌 专题' : ''}${isDone(l.date) ? '· ✅ 已打卡' : ''}</div>
         </div>
         <span class="chev">›</span>
       </div>`).join('') || '<p class="muted">还没有课程。</p>'}
@@ -175,7 +175,9 @@ function renderLesson(date){
         <label class="check"><input type="checkbox" data-date="${date}" data-word="${esc(r.w)}" ${isReviewed(date, r.w) ? 'checked' : ''}><span><b>${esc(r.w)}</b> — ${esc(r.m)}</span></label>`).join('')}
     </section>` : ''}
 
-    <button class="cta" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>
+    ${l.ref
+      ? '<div class="done-badge">📌 专题课 · 不参与打卡</div>'
+      : `<button class="cta" data-checkin="${date}">${isDone(date) ? '已完成 ✅' : '今日打卡'}</button>`}
   `;
   $$('.card').forEach(c => c.addEventListener('click', () => c.classList.toggle('flipped')));
   $$('.speak').forEach(b => b.addEventListener('click', () => speak(b.dataset.es)));
