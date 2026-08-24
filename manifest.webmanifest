@@ -1,0 +1,14 @@
+{
+  "name": "每日西语",
+  "short_name": "每日西语",
+  "description": "每天 5-10 分钟,萨拉曼卡生活开口",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f766e",
+  "theme_color": "#0f766e",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

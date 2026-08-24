@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "name": "每日西语",
+    "ui": "zh",
+    "lang": "es"
+  },
+  "lessons": [
+    {
+      "date": "2026-08-24",
+      "nivel": "A1",
+      "tema": "超市购物 (el supermercado)",
+      "vocab": [
+        {
+          "w": "la lista (de la compra)",
+          "m": "购物清单",
+          "e": "He hecho la lista de la compra.",
+          "n": "我列好了购物清单。"
+        },
+        {
+          "w": "comprar",
+          "m": "买",
+          "e": "Voy a comprar pan.",
+          "n": "我去买面包。"
+        },
+        {
+          "w": "la caja",
+          "m": "收银台 / 盒子",
+          "e": "¿Dónde está la caja?",
+          "n": "收银台在哪里?"
+        },
+        {
+          "w": "el precio",
+          "m": "价格",
+          "e": "¿Cuál es el precio?",
+          "n": "多少钱?"
+        },
+        {
+          "w": "pagar",
+          "m": "付钱",
+          "e": "Voy a pagar con tarjeta.",
+          "n": "我用卡付钱。"
+        }
+      ],
+      "tip": "西班牙超市高频词——la bolsa(袋子,要花钱)、el carrito(购物车)、la fruta(水果)、la leche(牛奶)。",
+      "grammar": "<p><code>comprar</code>(买)的变位——去掉 -ar,加 <code>-o / -as / -a / -amos / -áis / -an</code>:</p>\n<table><thead><tr><th>人称</th><th>变位</th><th>例句</th></tr></thead><tbody><tr><td>yo</td><td>compro</td><td><em>Compro pan.</em> 我买面包。</td></tr><tr><td>tú</td><td>compras</td><td><em>¿Qué compras?</em> 你买什么?</td></tr><tr><td>él / ella</td><td>compra</td><td><em>Ella compra fruta.</em> 她买水果。</td></tr><tr><td>nosotros</td><td>compramos</td><td><em>Compramos leche.</em> 我们买牛奶。</td></tr></tbody></table>\n<blockquote>记住:<strong>以 a 结尾的动词形 = \"他/她\"</strong>,和名词阴阳性一样——看到 <code>a</code> 先想到\"她\"。</blockquote>",
+      "speaking": [
+        {
+          "es": "¿Cuánto cuesta esto?",
+          "zh": "这个多少钱?"
+        },
+        {
+          "es": "¿Dónde está la caja?",
+          "zh": "收银台在哪里?"
+        },
+        {
+          "es": "Quiero pagar, por favor.",
+          "zh": "我想付钱。"
+        }
+      ],
+      "review": [
+        {
+          "w": "el piso",
+          "m": "公寓(阳性,o=男)"
+        },
+        {
+          "w": "el alquiler",
+          "m": "租金"
+        },
+        {
+          "w": "la llave",
+          "m": "钥匙(阴性)"
+        },
+        {
+          "w": "Vale.",
+          "m": "好的 / 行(西班牙人最常说)"
+        }
+      ]
+    },
+    {
+      "date": "2026-08-25",
+      "nivel": "A1",
+      "tema": "银行 / 办居留 (el banco)",
+      "vocab": [
+        {
+          "w": "el banco",
+          "m": "银行",
+          "e": "¿Dónde está el banco?",
+          "n": "银行在哪里?"
+        },
+        {
+          "w": "la cuenta",
+          "m": "(银行)账户",
+          "e": "Quiero abrir una cuenta.",
+          "n": "我想开个账户。"
+        },
+        {
+          "w": "abrir",
+          "m": "开(账户/门)",
+          "e": "Necesito abrir una cuenta.",
+          "n": "我需要开个账户。"
+        },
+        {
+          "w": "el dinero",
+          "m": "钱",
+          "e": "Necesito sacar dinero.",
+          "n": "我需要取钱。"
+        },
+        {
+          "w": "la cita",
+          "m": "预约",
+          "e": "Tengo una cita a las diez.",
+          "n": "我十点有个预约。"
+        }
+      ],
+      "tip": "在西班牙办居留 / 开银行卡几乎都要先约 cita(网上或 app 上预约),所以 cita 是生活高频词。",
+      "grammar": "<p>以 <code>abrir</code>(开,-ir)和 <code>comer</code>(吃,-er)为例——去掉 -er/-ir,加词尾:</p>\n<table><thead><tr><th>人称</th><th>abrir(开)</th><th>comer(吃)</th></tr></thead><tbody><tr><td>yo</td><td>abro</td><td>como</td></tr><tr><td>tú</td><td>abres</td><td>comes</td></tr><tr><td>él / ella</td><td>abre</td><td>come</td></tr><tr><td>nosotros</td><td>abrimos</td><td>comemos</td></tr><tr><td>vosotros</td><td>abrís</td><td>coméis</td></tr><tr><td>ellos / ellas</td><td>abren</td><td>comen</td></tr></tbody></table>\n<blockquote>规律:-er 和 -ir 变位几乎一样,<strong>只有 nosotros / vosotros 不同</strong>(-emos/-éis vs -imos/-ís)。先记住 yo 和 él/ella 形,就够开口。</blockquote>",
+      "speaking": [
+        {
+          "es": "Quiero abrir una cuenta, por favor.",
+          "zh": "我想开个账户。"
+        },
+        {
+          "es": "Necesito sacar dinero.",
+          "zh": "我需要取钱。"
+        },
+        {
+          "es": "¿A qué hora tengo la cita?",
+          "zh": "我几点有预约?"
+        }
+      ],
+      "review": [
+        {
+          "w": "la lista",
+          "m": "购物清单"
+        },
+        {
+          "w": "comprar",
+          "m": "买"
+        },
+        {
+          "w": "la caja",
+          "m": "收银台"
+        },
+        {
+          "w": "el precio",
+          "m": "价格"
+        },
+        {
+          "w": "pagar",
+          "m": "付钱"
+        }
+      ]
+    }
+  ]
+}
