@@ -5,7 +5,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,sans-serif;
-  background:var(--bg);color:var(--ink);line-height:1.5;padding-bottom:70px;-webkit-font-smoothing:antialiased;}
+  background:var(--bg);color:var(--ink);line-height:1.5;padding-bottom:80px;-webkit-font-smoothing:antialiased;}
 
 .appbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
   padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));background:var(--teal);color:#fff;}
@@ -16,7 +16,7 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 
 .tabbar{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;background:#fff;
   border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);max-width:640px;margin:0 auto;}
-.tabbar button{flex:1;padding:13px 0 11px;border:none;background:none;font-size:14px;color:var(--muted);cursor:pointer;}
+.tabbar button{flex:1;padding:15px 0 13px;border:none;background:none;font-size:17px;color:var(--muted);cursor:pointer;}
 .tabbar button.active{color:var(--teal);font-weight:700;}
 .tabbar button:active{opacity:.6;}
 
