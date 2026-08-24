@@ -107,6 +107,13 @@ main{padding:16px 16px 24px;max-width:640px;margin:0 auto;}
 .row-title{font-size:15px;font-weight:600;}
 .chev{color:var(--muted);}
 
+/* ---- 每日课程列表:今天高亮 ---- */
+.today-row{background:var(--teal-l);box-shadow:inset 3px 0 0 var(--teal);}
+.today-row .row-title{color:var(--teal);}
+.today-tag{display:inline-block;background:var(--teal);color:#fff;font-size:11px;font-weight:700;
+  border-radius:999px;padding:0 7px;margin-left:4px;vertical-align:1px;}
+.month-head{margin-top:4px;}
+
 .empty{text-align:center;padding:50px 20px;color:var(--ink);}
 .empty-emoji{font-size:44px;margin-bottom:10px;}
 .empty p{margin:4px 0;}

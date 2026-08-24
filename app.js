@@ -259,14 +259,21 @@ function renderToday(){
   renderStreak();
 }
 
-/* 「每日课程」tab:仅日常打卡课(进度条 + 全部日期列表) */
+/* 「每日课程」tab:仅日常打卡课(进度条 + 按月份分组的正序列表,今天高亮) */
 function renderDaily(){
-  const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => b.date.localeCompare(a.date));
+  const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => a.date.localeCompare(b.date));
   const p = overallProgress();
+  const t = todayStr();
+  const fmtDay = s => { const d = parseDate(s); const w = '日一二三四五六'[d.getDay()]; return `${d.getDate()}日 · 周${w}`; };
+  const groups = {};
+  for(const l of dailyL){
+    const k = l.date.slice(0, 7);   // YYYY-MM
+    (groups[k] = groups[k] || []).push(l);
+  }
   const row = l => `
-    <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
+    <div class="row ${isDone(l.date) ? 'done' : ''}${l.date === t ? ' today-row' : ''}" data-open="${l.date}">
       <div>
-        <div class="row-title">${fmt(l.date)} · ${esc(l.tema)}</div>
+        <div class="row-title">${fmtDay(l.date)} · ${esc(l.tema)}${l.date === t ? ' <span class="today-tag">今天</span>' : ''}</div>
         <div class="muted">${l.vocab.length} 词${isDone(l.date) ? ' · ✅ 已打卡' : ''}</div>
       </div>
       <span class="chev">›</span>
@@ -276,7 +283,13 @@ function renderDaily(){
       <div class="h2">📊 课程进度 · ${p.done}/${p.total}</div>
       <div class="progress"><i style="width:${p.pct}%"></i></div>
     </div>
-    ${dailyL.length ? `<div class="section"><div class="h2">📅 每日课程 · ${dailyL.length} 课</div>${dailyL.map(row).join('')}</div>` : '<p class="muted">还没有每日课程。</p>'}
+    ${dailyL.length
+      ? Object.keys(groups).sort().map(k => `
+        <div class="section">
+          <div class="h2 month-head">📅 ${k.slice(0,4)}年${+k.slice(5)}月 · ${groups[k].length} 课</div>
+          ${groups[k].map(row).join('')}
+        </div>`).join('')
+      : '<p class="muted">还没有每日课程。</p>'}
   `;
 }
 
