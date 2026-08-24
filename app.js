@@ -4,7 +4,7 @@ const $$ = s => [...document.querySelectorAll(s)];
 const INTERVALS = [1, 3, 7, 15, 30];
 const LS_KEY = 'daily-esp-progress-v1';
 
-const state = { lessons: [], progress: load() };
+const state = { lessons: [], refs: [], progress: load() };
 
 function load(){ try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e){ return {}; } }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state.progress)); }
@@ -77,11 +77,11 @@ function esc(s){ return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 
 /* ---- 视图 ---- */
 function renderToday(){
-  const today = state.lessons.find(l => l.date === todayStr());
-  const latest = state.lessons.slice().sort((a,b) => b.date.localeCompare(a.date))[0];
+  const daily = l => !l.ref;
+  const today = state.lessons.find(l => daily(l) && l.date === todayStr());
   if(today){ renderLesson(today.date); return; }
-  const last = state.lessons.filter(l => l.date < todayStr()).sort((a,b) => b.date.localeCompare(a.date))[0];
-  const upcoming = state.lessons.filter(l => l.date > todayStr()).sort((a,b) => a.date.localeCompare(b.date));
+  const last = state.lessons.filter(l => daily(l) && l.date < todayStr()).sort((a,b) => b.date.localeCompare(a.date))[0];
+  const upcoming = state.lessons.filter(l => daily(l) && l.date > todayStr()).sort((a,b) => a.date.localeCompare(b.date));
   $('#view').innerHTML = `
     <div class="empty">
       <div class="empty-emoji">🌅</div>
@@ -96,23 +96,34 @@ function renderToday(){
 }
 
 function renderLessons(){
-  const list = state.lessons.slice().sort((a,b) => b.date.localeCompare(a.date));
-  $('#view').innerHTML = `
-    <div class="section"><div class="h2">📚 全部课程</div>
-    ${list.map(l => `
-      <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
-        <div>
-          <div class="row-title">${fmt(l.date)} · ${esc(l.tema)}</div>
-          <div class="muted">${l.vocab.length} 词 ${l.ref ? '· 📌 专题' : ''}${isDone(l.date) ? '· ✅ 已打卡' : ''}</div>
-        </div>
-        <span class="chev">›</span>
-      </div>`).join('') || '<p class="muted">还没有课程。</p>'}
+  const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => b.date.localeCompare(a.date));
+  const topicL = state.lessons.filter(l => l.ref).sort((a,b) => b.date.localeCompare(a.date));
+  const refs = state.refs || [];
+  const row = l => `
+    <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
+      <div>
+        <div class="row-title">${fmt(l.date)} · ${esc(l.tema)}</div>
+        <div class="muted">${l.vocab.length} 词 ${l.ref ? '· 📌 专题' : ''}${isDone(l.date) ? '· ✅ 已打卡' : ''}</div>
+      </div>
+      <span class="chev">›</span>
     </div>`;
+  $('#view').innerHTML = `
+    ${refs.length ? `<div class="section"><div class="h2">📖 参考</div>
+      ${refs.map(r => `
+        <div class="row" data-openref="${r.id}">
+          <div><div class="row-title">${esc(r.title)}</div><div class="muted">完整笔记 · 点击阅读</div></div>
+          <span class="chev">›</span>
+        </div>`).join('')}</div>` : ''}
+    ${dailyL.length ? `<div class="section"><div class="h2">📚 每日课程</div>${dailyL.map(row).join('')}</div>` : ''}
+    ${topicL.length ? `<div class="section"><div class="h2">📌 专题</div>${topicL.map(row).join('')}</div>` : ''}
+    ${(!dailyL.length && !topicL.length && !refs.length) ? '<p class="muted">还没有课程。</p>' : ''}
+  `;
 }
 
 function renderReview(){
   const due = [];
   for(const l of state.lessons){
+    if(l.ref) continue;
     for(const v of l.vocab){
       if(dueDateFor(l, v) === todayStr()) due.push({ l, v });
     }
@@ -147,7 +158,7 @@ function renderLesson(date){
     ${fromList ? `<button class="back" data-tab="lessons">‹ 课程</button>` : ''}
     <div class="lesson-head">
       <h2>🇪🇸 ${esc(l.tema)}</h2>
-      <div class="meta"><span class="badge">${esc(l.nivel || 'A1')}</span><span class="muted">${fmt(l.date)}</span></div>
+      <div class="meta"><span class="badge">${esc(l.nivel || 'A1')}</span><span class="muted">${l.ref ? '📌 专题' : fmt(l.date)}</span></div>
       ${isDone(date) ? '<div class="done-badge">✅ 已完成</div>' : ''}
     </div>
 
@@ -189,6 +200,17 @@ function renderLesson(date){
   renderStreak();
 }
 
+function renderRef(id){
+  const r = (state.refs || []).find(x => x.id === id);
+  if(!r) return;
+  $('#view').innerHTML = `
+    <button class="back" data-tab="lessons">‹ 课程</button>
+    <div class="article-head"><h2>${esc(r.title)}</h2><div class="muted">完整导入 · ${fmt(r.date)}</div></div>
+    <div class="article">${r.html}</div>
+  `;
+  window.scrollTo(0, 0);
+}
+
 /* ---- 导航 ---- */
 function switchTab(tab){
   $$('.tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
@@ -205,6 +227,10 @@ function bindGlobal(){
     if(open){ renderLesson(open.dataset.open); window.scrollTo(0, 0); }
   });
   document.addEventListener('click', e => {
+    const ref = e.target.closest('[data-openref]');
+    if(ref){ renderRef(ref.dataset.openref); window.scrollTo(0, 0); }
+  });
+  document.addEventListener('click', e => {
     const back = e.target.closest('.back[data-tab]');
     if(back) switchTab(back.dataset.tab);
   });
@@ -214,7 +240,9 @@ function bindGlobal(){
 (async function init(){
   try{
     const res = await fetch('lessons.json?t=' + Date.now());
-    state.lessons = (await res.json()).lessons || [];
+    const data = await res.json();
+    state.lessons = data.lessons || [];
+    state.refs = data.refs || [];
   }catch(e){
     $('#view').innerHTML = '<div class="empty"><div class="empty-emoji">😵</div><p>课程数据加载失败</p><p class="muted">先跑 export.py 生成 lessons.json</p></div>';
   }
