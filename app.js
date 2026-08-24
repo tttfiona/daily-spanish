@@ -260,9 +260,9 @@ function renderToday(){
   renderStreak();
 }
 
-function renderLessons(){
+/* 「每日课程」tab:仅日常打卡课(进度条 + 全部日期列表) */
+function renderDaily(){
   const dailyL = state.lessons.filter(l => !l.ref).sort((a,b) => b.date.localeCompare(a.date));
-  const refs = state.refs || [];
   const p = overallProgress();
   const row = l => `
     <div class="row ${isDone(l.date) ? 'done' : ''}" data-open="${l.date}">
@@ -277,15 +277,21 @@ function renderLessons(){
       <div class="h2">📊 课程进度 · ${p.done}/${p.total}</div>
       <div class="progress"><i style="width:${p.pct}%"></i></div>
     </div>
-    ${refs.length ? `<div class="section"><div class="h2">📚 专题学习</div>
-      ${refs.map(r => `
+    ${dailyL.length ? `<div class="section"><div class="h2">📅 每日课程 · ${dailyL.length} 课</div>${dailyL.map(row).join('')}</div>` : '<p class="muted">还没有每日课程。</p>'}
+  `;
+}
+
+/* 「专题学习」tab:仅深度指南/参考文档长文 */
+function renderRefs(){
+  const refs = state.refs || [];
+  $('#view').innerHTML = `
+    <div class="section"><div class="h2">📚 专题学习 · ${refs.length} 篇</div>
+      ${refs.length ? refs.map(r => `
         <div class="row" data-openref="${r.id}">
           <div><div class="row-title">${esc(r.title)}</div><div class="muted">深度指南 · 点击阅读</div></div>
           <span class="chev">›</span>
-        </div>`).join('')}</div>` : ''}
-    ${dailyL.length ? `<div class="section"><div class="h2">📅 每日课程</div>${dailyL.map(row).join('')}</div>` : ''}
-    ${(!dailyL.length && !refs.length) ? '<p class="muted">还没有课程。</p>' : ''}
-  `;
+        </div>`).join('') : '<p class="muted">还没有专题内容。</p>'}
+    </div>`;
 }
 
 function senHTML(s){
@@ -340,7 +346,7 @@ function renderLesson(date){
   const fromList = todayStr() !== date;
   const isToday = todayStr() === date;
   $('#view').innerHTML = (isToday ? paceBarHTML() + statsHTML() : '') + `
-    ${fromList ? `<button class="back" data-tab="lessons">‹ 课程</button>` : ''}
+    ${fromList ? `<button class="back" data-tab="daily">‹ 每日课程</button>` : ''}
     <div class="lesson-head">
       <h2>🇪🇸 ${esc(l.tema)}</h2>
       <div class="meta"><span class="badge">${esc(l.nivel || 'A1')}</span><span class="muted">${l.ref ? '📌 专题' : fmt(l.date)}</span></div>
@@ -400,7 +406,7 @@ function renderRef(id){
   const r = (state.refs || []).find(x => x.id === id);
   if(!r) return;
   $('#view').innerHTML = `
-    <button class="back" data-tab="lessons">‹ 课程</button>
+    <button class="back" data-tab="refs">‹ 专题学习</button>
     <div class="article-head"><h2>${esc(r.title)}</h2><div class="muted">完整导入 · ${fmt(r.date)}</div></div>
     <div class="article">${r.html}</div>
   `;
@@ -411,7 +417,8 @@ function renderRef(id){
 function switchTab(tab){
   $$('.tabbar button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   if(tab === 'today') renderToday();
-  else if(tab === 'lessons') renderLessons();
+  else if(tab === 'daily') renderDaily();
+  else if(tab === 'refs') renderRefs();
   else if(tab === 'review') renderReview();
   window.scrollTo(0, 0);
 }
