@@ -311,18 +311,28 @@ function renderLesson(date){
 
     <section class="section">
       <div class="h2">🆕 生词 · ${l.vocab.length} ${l.vocab.length ? '<button class="mini" data-readall="vocab">🔊 全部朗读</button>' : ''}</div>
-      ${l.vocab.length ? '<div class="v-hint">👆 左点发音 · 右点看例句</div>' : ''}
+      ${l.vocab.length ? '<div class="v-hint">👆 左点发音 · 右点翻转看例句</div>' : ''}
       ${l.tip ? `<blockquote class="tip">💡 ${esc(l.tip)}</blockquote>` : ''}
       ${l.vocab.map(v => `
         <div class="vrow">
-          <div class="v-left" data-es="${esc(v.w)}">
-            <span class="v-ico">🔊</span>
-            <span class="v-w">${esc(v.w)}</span>
-          </div>
-          <div class="v-right" data-w="${esc(v.w)}">
-            <span class="v-m">${esc(v.m)}</span>
-            ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
-            <span class="v-chev">›</span>
+          <div class="vrow-inner">
+            <div class="vface front">
+              <div class="v-left" data-es="${esc(v.w)}">
+                <span class="v-ico">🔊</span>
+                <span class="v-w">${esc(v.w)}</span>
+              </div>
+              <div class="v-right" data-flip>
+                <span class="v-m">${esc(v.m)}</span>
+                ${v.ph ? `<span class="v-ph">🔤 ${esc(v.ph)}</span>` : ''}
+                <span class="v-chev">›</span>
+              </div>
+            </div>
+            <div class="vface back" data-flip>
+              ${v.e ? `<div class="v-bk"><span class="v-bk-l">💬</span><span>${esc(v.e)}</span></div>`
+                : v.ph ? `<div class="v-bk"><span class="v-bk-l">🔤</span><span>${esc(v.ph)}</span></div>` : ''}
+              ${v.n ? `<div class="v-bk"><span class="v-bk-l">📌</span><span>${esc(v.n)}</span></div>` : ''}
+              <div class="v-back-hint">‹ 点卡片翻回</div>
+            </div>
           </div>
         </div>`).join('')}
     </section>
@@ -388,7 +398,12 @@ function bindGlobal(){
     const s = e.target.closest('[data-es]');
     if(s){ e.stopPropagation(); speak(s.dataset.es); }
   });
-  // LightPeek:点单词弹词卡(生词右侧 / 开口句词)
+  // 生词卡翻转:点右侧 / 背面翻面(原地看例句)
+  document.addEventListener('click', e => {
+    const f = e.target.closest('[data-flip]');
+    if(f){ const card = f.closest('.vrow'); if(card) card.classList.toggle('flipped'); }
+  });
+  // LightPeek:点单词弹词卡(开口句词)
   document.addEventListener('click', e => {
     const w = e.target.closest('[data-w]');
     if(w){ e.stopPropagation(); openWordPopup(w.dataset.w); }
